@@ -2,5 +2,6 @@
 # this with "pip install -r tools.txt" to install everything.
 mercurial
 setuptools_hg
+hg-git
 -r requirements.txt
 -r test-requirements.txt

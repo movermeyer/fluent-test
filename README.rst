@@ -22,9 +22,26 @@ enough to be writing code against Python 3.3 or later (it has this built in).
 Download and install it from `virtualenv`_.  You will want to install this
 globally (system-wide) if at all possible.
 
---
+Quick Start
+-----------
+
+If you are really impatient and already have ``setuptools`` and ``virtualenv``
+installed, then run the following commands in a shell and you will be off and
+running::
+
+    prompt$ virtualenv --no-site-packages --quiet env
+    prompt$ source env/bin/activate
+    (env)prompt$ pip --quiet install -r tools.txt
+    (env)prompt$ ls -CF env/bin/hg env/bin/nosetests
+    env/bin/hg*                 env/bin/nosetests*
+
+Files
+=====
 
 Now that we have that out of the way, let's talk through the various files.
+There are only a handful of them that really matter.  The python files in
+the *replace_me* and *tests* directories are pretty worthless but they are
+required to make the whole package work.
 
 *setup.py*
 ----------
