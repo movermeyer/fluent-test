@@ -1,4 +1,5 @@
 import inspect
+import types
 
 
 class ClassTester:
@@ -29,13 +30,15 @@ def the_class(cls, matcher_class=None):
 
 
 def lookup_class(class_name):
-    if isinstance(class_name, basestring):
+    if isinstance(class_name, types.StringTypes):
         path = class_name.split('.')
         target = __import__(path[0])
         for next_segment in path[1:]:
             target = getattr(target, next_segment)
         return target
-    if isinstance(class_name, type):
+    if isinstance(class_name, types.TypeType):
+        return class_name
+    if isinstance(class_name, types.ClassType):
         return class_name
     raise AssertionError("I can't look up a class name from " +
                          str(class_name))

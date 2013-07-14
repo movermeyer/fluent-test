@@ -34,6 +34,9 @@ class IsSubclassOf(unittest.TestCase):
         assert self.describer.is_subclass_of(
             'tests.class_description_tests._GrandparentClass')
 
+    def should_work_with_old_style_classes(self):
+        assert self.describer.is_subclass_of(OldStyleClass)
+
 
 class HasAttribute(unittest.TestCase):
 
@@ -50,6 +53,10 @@ class HasAttribute(unittest.TestCase):
 ######################################################################
 ## Test Data
 
+class OldStyleClass:
+    pass
+
+
 class _GrandparentClass(object):
     pass
 
@@ -58,7 +65,7 @@ class _ParentClass(_GrandparentClass):
     pass
 
 
-class _ClassUnderTest(_ParentClass):
+class _ClassUnderTest(_ParentClass, OldStyleClass):
 
     class_attribute = 'string value'
 
