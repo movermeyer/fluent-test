@@ -44,10 +44,23 @@ class HasAttribute(unittest.TestCase):
         self.describer = the_class(_ClassUnderTest)
 
     def should_return_True_for_class_attribute(self):
-        assert self.describer.has_attribute('class_attribute')
+        assert self.describer.has_attribute('class_attribute') is True
 
-    def should_can_check_attribute_type(self):
-        assert self.describer.has_attribute('class_attribute', typed=basestring)
+    def should_optionally_check_attribute_type(self):
+        assert self.describer.has_attribute(
+            'class_attribute', typed=basestring) is True
+
+    def should_fail_if_attribute_has_incorrect_type(self):
+        assert self.describer.has_attribute(
+            'class_attribute', typed=int) is False
+
+    def should_optionally_check_attribute_value(self):
+        assert self.describer.has_attribute(
+            'class_attribute', value='string value') is True
+
+    def should_fail_if_attribute_has_incorrect_value(self):
+        assert self.describer.has_attribute(
+            'class_attribute', value='incorrect value') is False
 
 
 ######################################################################

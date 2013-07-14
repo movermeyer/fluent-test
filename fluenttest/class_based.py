@@ -16,11 +16,13 @@ class ClassTester:
     def is_subclass_of(self, parent_class):
         return issubclass(self.cls, lookup_class(parent_class))
 
-    def has_attribute(self, name, typed=None):
+    def has_attribute(self, name, typed=None, value=None):
         if name not in self.info:
             return False
         if typed is not None:
             return isinstance(getattr(self.cls, name), typed)
+        if value is not None:
+            return getattr(self.cls, name) == value
         return True
 
 
