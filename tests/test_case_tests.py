@@ -85,6 +85,29 @@ class TeardownClass(_PatchedBaseTest):
             patcher.stop.assert_called_once_with()
 
 
+class WhenTearingDownWithFailedPatch(_PatchedBaseTest):
+
+    @classmethod
+    def execute_test_steps(cls):
+        cls.good_patch = mock.Mock()
+        # patch().start() fails when patching something that doesn't exist.
+        cls.bad_patch = mock.Mock()
+        cls.bad_patch.start.side_effect = AttributeError
+        cls.mock_module.patch.side_effect = [
+            cls.good_patch,
+            cls.bad_patch,
+        ]
+
+        cls.test.patch('working_patch')
+        cls.test.patch('failing_patch')
+
+    def should_stop_working_patch(self):
+        self.good_patch.stop.assert_called_once_with()
+
+    def should_not_stop_failed_patch(self):
+        self.assertFalse(self.bad_patch.stop.called)
+
+
 class _WhenPatchingBaseCase(_PatchedBaseTest):
 
     patch_target = None

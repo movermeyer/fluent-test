@@ -32,8 +32,8 @@ class TestCase:
         if patch_name is None:
             patch_name = target.replace('.', '_')
         patcher = mock.patch(target, **kwargs)
-        cls._patches.append(patcher)
         patched = patcher.start()
+        cls._patches.append(patcher)
         setattr(cls.patches, patch_name, patched)
         return patched
 
