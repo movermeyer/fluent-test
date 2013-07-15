@@ -1,5 +1,6 @@
 import collections
 import inspect
+import types
 import unittest
 
 import mock
@@ -27,6 +28,9 @@ class FluentTestCase(unittest.TestCase):
 
     def should_implement_run_test(self):
         self.assert_is_class_method('run_test')
+
+    def should_be_a_new_class(self):
+        self.assertIsInstance(fluenttest.TestCase, types.TypeType)
 
     def assert_is_class_method(self, name):
         self.assertEquals(self.class_attrs[name].kind, 'class method')

@@ -5,7 +5,7 @@ class _PrototypeObject:
     pass
 
 
-class TestCase:
+class TestCase(object):
     allowed_exceptions = ()
 
     @classmethod
