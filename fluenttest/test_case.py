@@ -6,16 +6,18 @@ class _PrototypeObject:
 
 
 class TestCase:
+    allowed_exceptions = ()
 
     @classmethod
     def setup_class(cls):
         cls.exception = None
         cls.patches = _PrototypeObject()
         cls._patches = []
+
         cls.configure()
         try:
             cls.run_test()
-        except Exception as exc:
+        except cls.allowed_exceptions as exc:
             cls.exception = exc
 
     @classmethod

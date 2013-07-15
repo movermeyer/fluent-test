@@ -1,16 +1,10 @@
+import collections
 import inspect
 import unittest
 
 import mock
 
 import fluenttest
-
-
-class MockedTestCase(fluenttest.TestCase):
-    __test__ = False
-
-    configure = mock.Mock()
-    run_test = mock.Mock()
 
 
 class FluentTestCase(unittest.TestCase):
@@ -38,18 +32,46 @@ class FluentTestCase(unittest.TestCase):
         self.assertEquals(self.class_attrs[name].kind, 'class method')
 
 
-class SetupClass(unittest.TestCase):
+class PatchedFluentTestCase(unittest.TestCase):
+    allowed_exceptions = ()
 
     @classmethod
     def setUpClass(cls):
-        cls.test = MockedTestCase()
+        cls._patch_list = [
+            mock.patch.object(
+                fluenttest.test_case.TestCase,
+                'allowed_exceptions',
+                cls.allowed_exceptions,
+            ),
+            mock.patch('fluenttest.test_case.TestCase.configure'),
+            mock.patch('fluenttest.test_case.TestCase.run_test'),
+        ]
+        cls.patches = collections.namedtuple(
+            'PatchList', 'configure run_test')
+        cls._patch_list[0].start()
+        cls.patches.configure = cls._patch_list[1].start()
+        cls.patches.run_test = cls._patch_list[2].start()
+
+    @classmethod
+    def tearDownClass(cls):
+        for patch in cls._patch_list:
+            patch.stop()
+
+
+class SetupClass(PatchedFluentTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super(SetupClass, cls).setUpClass()
+
+        cls.test = fluenttest.TestCase()
         cls.test.setup_class()
 
     def should_call_configure(self):
-        self.test.configure.assert_called_once_with()
+        self.patches.configure.assert_called_once_with()
 
     def should_call_run_test(self):
-        self.test.run_test.assert_called_once_with()
+        self.patches.run_test.assert_called_once_with()
 
     def should_create_patches_attribute(self):
         self.assertIsNotNone(getattr(self.test, 'patches'))
@@ -57,17 +79,25 @@ class SetupClass(unittest.TestCase):
     def should_create_and_initialize_exception_attribute(self):
         self.assertIsNone(self.test.exception)
 
+    def should_create_and_initialize_allowed_exceptions_attribute(self):
+        self.assertEquals(self.test.allowed_exceptions, ())
 
-class _PatchedBaseTest(unittest.TestCase):
+
+class _PatchedBaseTest(PatchedFluentTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(_PatchedBaseTest, cls).setUpClass()
         with mock.patch('fluenttest.test_case.mock') as cls.mock_module:
             cls.patcher = cls.mock_module.patch.return_value
-            cls.test = MockedTestCase()
+            cls.test = fluenttest.TestCase()
             cls.test.setup_class()
-            cls.execute_test_steps()
-            cls.test.teardown_class()
+            try:
+                cls.execute_test_steps()
+            except Exception as exc:
+                cls.captured_exception = exc
+            finally:
+                cls.test.teardown_class()
 
 
 class TeardownClass(_PatchedBaseTest):
@@ -159,6 +189,19 @@ class WhenPatchingWithNameSpecified(_WhenPatchingBaseCase):
         self.assertIs(self.test.patches.name_override, self.return_value)
 
 
+class WhenPatchingFails(_PatchedBaseTest):
+
+    @classmethod
+    def execute_test_steps(cls):
+        cls.expected_exception = Exception()
+        cls.patcher.start.side_effect = cls.expected_exception
+
+        cls.test.patch('patch_target')
+
+    def should_propagate_exception(self):
+        self.assertIs(self.captured_exception, self.expected_exception)
+
+
 class WhenPatchingAnInstance(_PatchedBaseTest):
 
     patch_target = 'target.class'
@@ -205,15 +248,31 @@ class TheDefaultRunTestImplementation(unittest.TestCase):
             fluenttest.TestCase.run_test()
 
 
-class WhenRunTestRaiseException(unittest.TestCase):
+class RunTestWithException(PatchedFluentTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.raised_exception = Exception()
-        cls.test = MockedTestCase()
-        cls.test.run_test.side_effect = cls.raised_exception
+        super(RunTestWithException, cls).setUpClass()
 
-        cls.test.setup_class()
+        cls.raised_exception = LookupError()
+        cls.patches.run_test.side_effect = cls.raised_exception
+
+        cls.test = fluenttest.TestCase()
+        try:
+            cls.test.setup_class()
+        except Exception as exc:
+            cls.caught_exception = exc
+
+
+class WhenRunTestRaisesAnAllowedException(RunTestWithException):
+    allowed_exceptions = LookupError
 
     def it_should_be_captured(self):
         self.assertIs(self.test.exception, self.raised_exception)
+
+
+class WhenRunTestRaisesUnexpectedException(RunTestWithException):
+    allowed_exceptions = KeyError
+
+    def it_should_be_propagated(self):
+        self.assertIs(self.caught_exception, self.raised_exception)
