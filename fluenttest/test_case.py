@@ -14,9 +14,9 @@ class TestCase(object):
         cls.patches = _PrototypeObject()
         cls._patches = []
 
-        cls.configure()
+        cls.arrange()
         try:
-            cls.run_test()
+            cls.act()
         except cls.allowed_exceptions as exc:
             cls.exception = exc
 
@@ -26,7 +26,7 @@ class TestCase(object):
             patcher.stop()
 
     @classmethod
-    def configure(cls):
+    def arrange(cls):
         pass
 
     @classmethod
@@ -45,5 +45,5 @@ class TestCase(object):
         return patched_class, patched_class.return_value
 
     @classmethod
-    def run_test(cls):
+    def act(cls):
         raise NotImplementedError

@@ -23,11 +23,11 @@ class FluentTestCase(unittest.TestCase):
     def should_implement_teardown_class(self):
         self.assert_is_class_method('teardown_class')
 
-    def should_implement_configure(self):
-        self.assert_is_class_method('configure')
+    def should_implement_arrange(self):
+        self.assert_is_class_method('arrange')
 
-    def should_implement_run_test(self):
-        self.assert_is_class_method('run_test')
+    def should_implement_act(self):
+        self.assert_is_class_method('act')
 
     def should_be_a_new_class(self):
         self.assertIsInstance(fluenttest.TestCase, types.TypeType)
@@ -47,14 +47,14 @@ class PatchedFluentTestCase(unittest.TestCase):
                 'allowed_exceptions',
                 cls.allowed_exceptions,
             ),
-            mock.patch('fluenttest.test_case.TestCase.configure'),
-            mock.patch('fluenttest.test_case.TestCase.run_test'),
+            mock.patch('fluenttest.test_case.TestCase.arrange'),
+            mock.patch('fluenttest.test_case.TestCase.act'),
         ]
         cls.patches = collections.namedtuple(
-            'PatchList', 'configure run_test')
+            'PatchList', 'arrange act')
         cls._patch_list[0].start()
-        cls.patches.configure = cls._patch_list[1].start()
-        cls.patches.run_test = cls._patch_list[2].start()
+        cls.patches.arrange = cls._patch_list[1].start()
+        cls.patches.act = cls._patch_list[2].start()
 
     @classmethod
     def tearDownClass(cls):
@@ -71,11 +71,11 @@ class SetupClass(PatchedFluentTestCase):
         cls.test = fluenttest.TestCase()
         cls.test.setup_class()
 
-    def should_call_configure(self):
-        self.patches.configure.assert_called_once_with()
+    def should_call_arrange(self):
+        self.patches.arrange.assert_called_once_with()
 
-    def should_call_run_test(self):
-        self.patches.run_test.assert_called_once_with()
+    def should_call_act(self):
+        self.patches.act.assert_called_once_with()
 
     def should_create_patches_attribute(self):
         self.assertIsNotNone(getattr(self.test, 'patches'))
@@ -245,11 +245,11 @@ class WhenPatchingAnInstanceWithNameSpecified(WhenPatchingAnInstance):
             'class.name', patch_name='target_class', **cls.kwargs)
 
 
-class TheDefaultRunTestImplementation(unittest.TestCase):
+class TheDefaultActImplementation(unittest.TestCase):
 
     def should_raise_NotImplementedError(self):
         with self.assertRaises(NotImplementedError):
-            fluenttest.TestCase.run_test()
+            fluenttest.TestCase.act()
 
 
 class RunTestWithException(PatchedFluentTestCase):
@@ -259,7 +259,7 @@ class RunTestWithException(PatchedFluentTestCase):
         super(RunTestWithException, cls).setUpClass()
 
         cls.raised_exception = LookupError()
-        cls.patches.run_test.side_effect = cls.raised_exception
+        cls.patches.act.side_effect = cls.raised_exception
 
         cls.test = fluenttest.TestCase()
         try:
