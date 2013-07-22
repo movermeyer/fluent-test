@@ -20,6 +20,8 @@ closer to what `RSpec`_ offers but one that feels like Python.
    unit-testing
    api
 
+.. include:: links.rst
+
 Indices and tables
 ==================
 
