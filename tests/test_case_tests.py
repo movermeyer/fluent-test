@@ -1,6 +1,5 @@
 import collections
 import inspect
-import types
 import unittest
 
 import mock
@@ -30,7 +29,9 @@ class FluentTestCase(unittest.TestCase):
         self.assert_is_class_method('act')
 
     def should_be_a_new_class(self):
-        self.assertIsInstance(fluenttest.TestCase, types.TypeType)
+        class _NewStyleClass(object):
+            pass
+        self.assertIsInstance(fluenttest.TestCase, type(_NewStyleClass))
 
     def assert_is_class_method(self, name):
         self.assertEquals(self.class_attrs[name].kind, 'class method')
@@ -41,24 +42,30 @@ class PatchedFluentTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._patch_list = [
-            mock.patch.object(
+        cls._patch_dict = cls.make_patches()
+        cls.patches = collections.namedtuple(
+            'PatchList', ' '.join(cls._patch_dict.keys()))
+        for patch_name in cls._patch_dict.keys():
+            setattr(
+                cls.patches,
+                patch_name,
+                cls._patch_dict[patch_name].start()
+            )
+
+    @classmethod
+    def make_patches(cls):
+        return {
+            'allowed_exceptions': mock.patch.object(
                 fluenttest.test_case.TestCase,
                 'allowed_exceptions',
                 cls.allowed_exceptions,
             ),
-            mock.patch('fluenttest.test_case.TestCase.arrange'),
-            mock.patch('fluenttest.test_case.TestCase.act'),
-        ]
-        cls.patches = collections.namedtuple(
-            'PatchList', 'arrange act')
-        cls._patch_list[0].start()
-        cls.patches.arrange = cls._patch_list[1].start()
-        cls.patches.act = cls._patch_list[2].start()
+            'act': mock.patch('fluenttest.test_case.TestCase.act'),
+        }
 
     @classmethod
     def tearDownClass(cls):
-        for patch in cls._patch_list:
+        for patch in cls._patch_dict.values():
             patch.stop()
 
 
@@ -71,9 +78,6 @@ class SetupClass(PatchedFluentTestCase):
         cls.test = fluenttest.TestCase()
         cls.test.setup_class()
 
-    def should_call_arrange(self):
-        self.patches.arrange.assert_called_once_with()
-
     def should_call_act(self):
         self.patches.act.assert_called_once_with()
 
@@ -85,6 +89,19 @@ class SetupClass(PatchedFluentTestCase):
 
     def should_create_and_initialize_allowed_exceptions_attribute(self):
         self.assertEquals(self.test.allowed_exceptions, ())
+
+
+class SetupClassWithArrange(SetupClass):
+
+    @classmethod
+    def make_patches(cls):
+        patch_dict = super(SetupClassWithArrange, cls).make_patches()
+        patch_dict['arrange'] = mock.patch(
+            'fluenttest.test_case.TestCase.arrange')
+        return patch_dict
+
+    def should_call_arrange(self):
+        self.test.arrange.assert_called_once_with()
 
 
 class _PatchedBaseTest(PatchedFluentTestCase):

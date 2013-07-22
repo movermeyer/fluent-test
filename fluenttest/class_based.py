@@ -1,5 +1,4 @@
 import inspect
-import types
 
 
 class ClassTester:
@@ -14,9 +13,9 @@ class ClassTester:
     class attributes.
 
     >>> probe = ClassTester(dict)
-    >>> probe.implements_method('has_key')
+    >>> probe.implements_method('keys')
     True
-    >>> probe.has_attribute('has_key')
+    >>> probe.has_attribute('keys')
     True
     >>> probe.has_attribute('__class__')
     True
@@ -87,15 +86,19 @@ def lookup_class(target):
     :returns: a :py:class:`class` or :py:class:`type` instance
 
     """
-    if isinstance(target, types.StringTypes):
+    class NewStyle(object):
+        pass
+
+    class OldStyle:
+        pass
+
+    if isinstance(target, str):
         path = target.split('.')
         target = __import__(path[0])
         for next_segment in path[1:]:
             target = getattr(target, next_segment)
         return target
-    if isinstance(target, types.TypeType):
-        return target
-    if isinstance(target, types.ClassType):
+    if isinstance(target, (type(OldStyle), type(NewStyle))):
         return target
     raise AssertionError("I can't look up a class name from " +
                          str(target))

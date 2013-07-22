@@ -48,7 +48,7 @@ class HasAttribute(unittest.TestCase):
 
     def should_optionally_check_attribute_type(self):
         assert self.describer.has_attribute(
-            'class_attribute', typed=basestring) is True
+            'class_attribute', typed=str) is True
 
     def should_fail_if_attribute_has_incorrect_type(self):
         assert self.describer.has_attribute(
