@@ -6,6 +6,7 @@ class _PrototypeObject:
 
 
 class TestCase(object):
+
     """Arrange, Act, Assert test case.
 
     Sub-classes implement test cases by *arranging* the environment in the
@@ -75,7 +76,7 @@ class TestCase(object):
 
     @classmethod
     def patch(cls, target, patch_name=None, **kwargs):
-        """Patch a named class or method.
+        r"""Patch a named class or method.
 
         This method calls :py:func:`mock.patch` with *target* and
         *\*\*kwargs*.  The resulting patcher is stored in the
@@ -84,6 +85,8 @@ class TestCase(object):
         then the name is derived by replacing "dots" in *target* with
         underscores - ``exceptions.Exception`` would be stored as
         ``self.patches.exceptions_Exception``.
+
+        :returns: the result of starting the patch.
 
         """
         if patch_name is None:
@@ -96,7 +99,7 @@ class TestCase(object):
 
     @classmethod
     def patch_instance(cls, target, **kwargs):
-        """Patch a named class and return the created instance.
+        r"""Patch a named class and return the created instance.
 
         :param str target: the dotted-name of the class to patch
         :returns: tuple of (patched class, patched instance)
@@ -116,5 +119,6 @@ class TestCase(object):
         """The action to test.
 
         **Subclasses are required to replace this method.**
+
         """
         raise NotImplementedError

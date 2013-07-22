@@ -2,6 +2,7 @@ import inspect
 
 
 class ClassTester:
+
     """Assert that a class matches certain conditions.
 
     :param type cls: the class under test
@@ -24,6 +25,7 @@ class ClassTester:
     or ``False``.  This is test runner agnostic so you can use the assertions
     with `nose <http://nose.readthedocs.org/>`_, :py:mod:`unittest`,
     or `py.test <http://pytest.org/>`_.
+
     """
 
     def __init__(self, cls):
