@@ -1,29 +1,22 @@
 #!/usr/bin/env python
+import os.path
 
 from setuptools import find_packages, setup
 
+from setupext import read_requirements_from_file
 
-def read_requirements(req_file):
-    reqs = []
-    try:
-        f = open(req_file)
-        for line in f:
-            if '#' in line:
-                line = line[0 : line.find('#')]
-            line = line.strip()
-            if line:
-                reqs.append(line)
-        f.close()
-    except IOError:
-        pass
-    return reqs
+
+root_dir = os.path.dirname(__file__)
+
 
 # read runtime requirements from a pip formatted requirements.txt
-required_packages = read_requirements('requirements.txt')
+required_packages = read_requirements_from_file(
+    os.path.join(root_dir, 'requirements.txt'))
 
 # additional components used for testing are added in here
 test_requirements = required_packages[:]
-test_requirements.extend(read_requirements('test-requirements.txt'))
+test_requirements.extend(read_requirements_from_file(
+    os.path.join(root_dir, 'test-requirements.txt')))
 
 # and the top-level README becomes our packages long description
 f = open('README.rst')
