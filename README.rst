@@ -15,6 +15,13 @@ Most of the frameworks that I have seen rely on duplicated information between
 the specification and the test cases.  My belief is that we need something
 closer to what `RSpec`_ offers but one that feels like Python.
 
+Where?
+~~~~~~
+
+- Source Code: https://github.com/dave-shawley/fluent-test
+- CI: https://travis-ci.org/dave-shawley/fluent-test
+- Documentation: https://readthedocs.org/projects/fluent-test/
+
 .. _unittest: http://docs.python.org/2/library/unittest.html
 .. _RSpec: http://rspec.info/
 
