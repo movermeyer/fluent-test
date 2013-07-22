@@ -20,7 +20,7 @@ Where?
 
 - Source Code: https://github.com/dave-shawley/fluent-test
 - CI: https://travis-ci.org/dave-shawley/fluent-test
-- Documentation: https://readthedocs.org/projects/fluent-test/
+- Documentation: https://fluent-test.readthedocs.org/
 
 .. _unittest: http://docs.python.org/2/library/unittest.html
 .. _RSpec: http://rspec.info/
