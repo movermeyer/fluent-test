@@ -3,6 +3,29 @@ import types
 
 
 class ClassTester:
+    """Assert that a class matches certain conditions.
+
+    :param type cls: the class under test
+
+    This class provides a readable and efficient method for asserting
+    that a class implements a particular interface.  Instead of specifying
+    the interface using abstract base classes and the like, this test
+    specifies the interface as a set of operations, parent classes, and
+    class attributes.
+
+    >>> probe = ClassTester(dict)
+    >>> probe.implements_method('has_key')
+    True
+    >>> probe.has_attribute('has_key')
+    True
+    >>> probe.has_attribute('__class__')
+    True
+
+    Each assertion is implemented as a separate method that returns ``True``
+    or ``False``.  This is test runner agnostic so you can use the assertions
+    with `nose <http://nose.readthedocs.org/>`_, :py:mod:`unittest`,
+    or `py.test <http://pytest.org/>`_.
+    """
 
     def __init__(self, cls):
         self.cls = cls
@@ -11,12 +34,30 @@ class ClassTester:
             self.info[attr.name] = attr
 
     def implements_method(self, name):
+        """Does the class implement a method named *name*?"""
         return name in self.info and self.info[name].kind == 'method'
 
     def is_subclass_of(self, parent_class):
+        """Is the class a subclass of *parent_class*?
+
+        :param parent_class: a dotted class name or anything acceptable
+            to :py:func:`.lookup_class`.
+        """
         return issubclass(self.cls, lookup_class(parent_class))
 
     def has_attribute(self, name, typed=None, value=None):
+        """Does the class have an attribute named *name*?
+
+        :param str name: the name of the attribute to probe
+        :param type typed: require the attribute to be an instance of
+            this type
+        :param value: require the attribute to have this specific value
+
+        This method **does not** inspect the attributes of instances of
+        the class.  It only examines the named attributes of the class
+        itself.
+
+        """
         if name not in self.info:
             return False
         if typed is not None:
@@ -27,20 +68,34 @@ class ClassTester:
 
 
 def the_class(cls, matcher_class=None):
+    """Return a :py:class:`ClassTester` instance for ``cls``.
+
+    :param cls: the ``class`` instance to inspect.
+    :param type matcher_class: the type to instantiate, defaults
+        to :py:class:`ClassTester`
+
+    """
     matcher_class = matcher_class or ClassTester
     return matcher_class(cls)
 
 
-def lookup_class(class_name):
-    if isinstance(class_name, types.StringTypes):
-        path = class_name.split('.')
+def lookup_class(target):
+    """Find a class named ``target``.
+
+    :param str target: the dot-separated name of the class to find,
+        a ``class`` instance, or a ``type`` instance.
+    :returns: a :py:class:`class` or :py:class:`type` instance
+
+    """
+    if isinstance(target, types.StringTypes):
+        path = target.split('.')
         target = __import__(path[0])
         for next_segment in path[1:]:
             target = getattr(target, next_segment)
         return target
-    if isinstance(class_name, types.TypeType):
-        return class_name
-    if isinstance(class_name, types.ClassType):
-        return class_name
+    if isinstance(target, types.TypeType):
+        return target
+    if isinstance(target, types.ClassType):
+        return target
     raise AssertionError("I can't look up a class name from " +
-                         str(class_name))
+                         str(target))

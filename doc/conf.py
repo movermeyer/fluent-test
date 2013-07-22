@@ -54,5 +54,6 @@ texinfo_documents = [
 ]
 
 intersphinx_mapping = {
-    'http://docs.python.org/': None,
+    'python': ('http://docs.python.org/', None),
+    'mock': ('http://mock.readthedocs.org/en/latest/', None),
 }
