@@ -1,13 +1,11 @@
-%YAML 1.2
-
 language: python
 
 python:
-   - "2.7"
-   - "3.3"
+    - "2.7"
+    - "3.3"
 
 install:
-	- pip install -r requirements.txt -r test-requirements.txt --use-mirrors
+    - pip install -r requirements.txt -r test-requirements.txt --use-mirrors
 
 script:
-	- nosetests
+    - nosetests
