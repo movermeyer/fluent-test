@@ -62,6 +62,9 @@ class HasAttribute(unittest.TestCase):
         assert self.describer.has_attribute(
             'class_attribute', value='incorrect value') is False
 
+    def should_fail_if_attribute_does_not_exist(self):
+        assert self.describer.has_attribute('not_exist') is False
+
 
 ######################################################################
 ## Test Data
