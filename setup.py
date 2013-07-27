@@ -8,7 +8,6 @@ from setupext import read_requirements_from_file
 
 root_dir = os.path.dirname(__file__)
 
-
 # read runtime requirements from a pip formatted requirements.txt
 required_packages = read_requirements_from_file(
     os.path.join(root_dir, 'requirements.txt'))
@@ -34,7 +33,7 @@ setup(
     url='http://github.com/dave-shawley/fluent-test/',
     description='Fluent testing for Python',
     long_description=readme,
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests', 'tests.*']),
     zip_safe=False,
     include_package_data=True,
     platforms='any',
