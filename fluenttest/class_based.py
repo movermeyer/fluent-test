@@ -43,6 +43,7 @@ class ClassTester:
 
         :param parent_class: a dotted class name or anything acceptable
             to :py:func:`.lookup_class`.
+
         """
         return issubclass(self.cls, lookup_class(parent_class))
 
