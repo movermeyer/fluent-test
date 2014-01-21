@@ -1,9 +1,11 @@
 CURL ?= curl
 ENVDIR ?= $(CURDIR)/env
 FIND ?= find
+FLAKE8 = $(ENVDIR)/bin/flake8
 MKDIR ?= mkdir -p
 NOSE = $(ENVDIR)/bin/nosetests
 PIP = $(ENVDIR)/bin/pip
+PYLINT = $(ENVDIR)/bin/pylint
 PYTHON = $(ENVDIR)/bin/python
 STATEDIR = $(ENVDIR)/.state
 TOUCH ?= touch
@@ -46,6 +48,11 @@ $(STATEDIR): $(ENVDIR)
 .PHONY: test lint
 test: environment
 	$(NOSE)
+
+lint: environment
+	$(FLAKE8) fluenttest tests
+	- $(PYLINT) --rcfile=pylintrc fluenttest
+	- $(PYLINT) --rcfile=pylintrc --disable=C,R,broad-except tests
 
 
 .PHONY: clean mostly-clean dist-clean maintainer-clean
