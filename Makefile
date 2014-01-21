@@ -2,6 +2,7 @@ CURL ?= curl
 ENVDIR ?= $(CURDIR)/env
 FIND ?= find
 MKDIR ?= mkdir -p
+NOSE = $(ENVDIR)/bin/nosetests
 PIP = $(ENVDIR)/bin/pip
 PYTHON = $(ENVDIR)/bin/python
 STATEDIR = $(ENVDIR)/.state
@@ -40,6 +41,11 @@ $(ENVDIR):
 	@ $(MKDIR) $(STATEDIR)
 
 $(STATEDIR): $(ENVDIR)
+
+
+.PHONY: test lint
+test: environment
+	$(NOSE)
 
 
 .PHONY: clean mostly-clean dist-clean maintainer-clean

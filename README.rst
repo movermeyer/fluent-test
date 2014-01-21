@@ -55,6 +55,7 @@ interpreter with ``env/bin/python``, and run the test suite with ``env/bin/noset
 
 The Makefile exports a few other useful targets:
 
+- **make test**: run the tests
 - **make clean**: remove cache files
 - **make mostly-clean**: remove built and cached eggs
 - **make dist-clean**: remove generated distributions
