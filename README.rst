@@ -53,6 +53,13 @@ and install the various prerequisites such as *pip* and *nose*.  You can
 activate the environment source ``source env/bin/activate``, launch a Python
 interpreter with ``env/bin/python``, and run the test suite with ``env/bin/nosetests``.
 
+The Makefile exports a few other useful targets:
+
+- **make clean**: remove cache files
+- **make mostly-clean**: remove built and cached eggs
+- **make dist-clean**: remove generated distributions
+- **make maintainer-clean**: remove virtual environment
+
 .. _unittest: http://docs.python.org/2/library/unittest.html
 .. _RSpec: http://rspec.info/
 .. _gitflow: https://github.com/nvie/gitflow

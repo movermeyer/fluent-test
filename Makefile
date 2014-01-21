@@ -1,5 +1,6 @@
 CURL ?= curl
 ENVDIR ?= $(CURDIR)/env
+FIND ?= find
 MKDIR ?= mkdir -p
 PIP = $(ENVDIR)/bin/pip
 PYTHON = $(ENVDIR)/bin/python
@@ -39,3 +40,22 @@ $(ENVDIR):
 	@ $(MKDIR) $(STATEDIR)
 
 $(STATEDIR): $(ENVDIR)
+
+
+.PHONY: clean mostly-clean dist-clean maintainer-clean
+
+clean:
+	- $(FIND) . -name '__pycache__' -delete
+	- $(FIND) . -name '*.pyc' -delete
+	- $(RM) .coverage
+
+mostly-clean: clean
+	- $(RM) -r build
+	- $(RM) -r *.egg
+	- $(RM) -r *.egg-info
+
+dist-clean: mostly-clean
+	- $(RM) -r dist
+
+maintainer-clean: dist-clean
+	- $(RM) -r $(ENVDIR)
