@@ -61,6 +61,7 @@ The Makefile exports a few other useful targets:
 - **make mostly-clean**: remove built and cached eggs
 - **make dist-clean**: remove generated distributions
 - **make maintainer-clean**: remove virtual environment
+- **make sdist**: create a distribution tarball
 
 .. _unittest: http://docs.python.org/2/library/unittest.html
 .. _RSpec: http://rspec.info/

@@ -72,3 +72,9 @@ dist-clean: mostly-clean
 
 maintainer-clean: dist-clean
 	- $(RM) -r $(ENVDIR)
+
+
+.PHONY: sdist
+
+sdist:
+	$(PYTHON) setup.py sdist
