@@ -8,6 +8,7 @@ PIP = $(ENVDIR)/bin/pip
 PYLINT = $(ENVDIR)/bin/pylint
 PYTHON = $(ENVDIR)/bin/python
 STATEDIR = $(ENVDIR)/.state
+TAR ?= tar
 TOUCH ?= touch
 VIRTUALENV ?= pyvenv
 # VIRTUALENV ?= virtualenv --quiet --prompt='{fluent-test}' --no-setuptools --no-pip
@@ -76,5 +77,13 @@ maintainer-clean: dist-clean
 
 .PHONY: sdist
 
-sdist:
+sdist: environment
 	$(PYTHON) setup.py sdist
+
+
+.PHONY: docs
+
+docs: environment
+	$(PYTHON) setup.py build_sphinx
+	@ test -d dist || $(MKDIR) dist
+	cd build/doc/html && $(TAR) --create --gzip --file ../../../dist/Fluent-Test-docs.tar.gz .
