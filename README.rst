@@ -42,7 +42,7 @@ Like many other projects, the development environment is contained in a
 virtual environment and controlled by a Makefile.  The inclusion of make is
 less than perfect, but it is the easiest way to bootstrap a project on just
 about any platform.  Start out by cloning the repository with git and
-building a virtual environment to work with.
+building a virtual environment to work with::
 
     $ git clone https://github.com/my-org/fluent-test.git
     $ cd fluent-test
