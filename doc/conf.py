@@ -8,6 +8,8 @@ from __future__ import unicode_literals
 import os
 import sys
 
+import fluenttest
+
 
 sys.path.insert(0, os.path.abspath('.'))
 
@@ -23,9 +25,9 @@ project = 'Fluent Test'
 copyright = '2013, Dave Shawley'
 
 # The short X.Y version.
-version = '1'
+version = fluenttest.__version__
 # The full version, including alpha/beta/rc tags.
-release = '1'
+release = fluenttest.__version__
 
 exclude_patterns = []
 pygments_style = 'sphinx'
