@@ -59,11 +59,12 @@ lint: environment
 .PHONY: clean mostly-clean dist-clean maintainer-clean
 
 clean:
-	- $(FIND) . -name '__pycache__' -delete
 	- $(FIND) . -name '*.pyc' -delete
+	- $(FIND) . -name '__pycache__' -delete
 	- $(RM) .coverage
 
 mostly-clean: clean
+	- $(FIND) . -name '__pycache__' -delete
 	- $(RM) -r build
 	- $(RM) -r *.egg
 	- $(RM) -r *.egg-info
