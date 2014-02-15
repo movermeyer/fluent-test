@@ -57,6 +57,8 @@ class TestCase(object):
             cls.act()
         except cls.allowed_exceptions as exc:
             cls.exception = exc
+        finally:
+            cls.destroy()
 
     @classmethod
     def teardown_class(cls):
@@ -70,6 +72,16 @@ class TestCase(object):
 
         Concrete test classes will probably override this method and should
         invoke this implementation via ``super()``.
+
+        """
+        pass
+
+    @classmethod
+    def destroy(cls):
+        """Perform post-test cleanup.
+
+        Concrete tests classes may override this method if there are actions
+        that need to be performed after :py:meth:`act` is called.
 
         """
         pass
