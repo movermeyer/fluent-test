@@ -75,7 +75,7 @@ class TestCase(object):
         pass
 
     @classmethod
-    def patch(cls, target, patch_name=None, **kwargs):
+    def patch(cls, target, **kwargs):
         r"""Patch a named class or method.
 
         :param str target: the dotted-name to patch

@@ -204,17 +204,6 @@ class WhenPatchingAnInstance(_PatchedBaseTest):
             self.patch_target, **self.kwargs)
 
 
-class WhenPatchingAnInstanceWithNameSpecified(WhenPatchingAnInstance):
-
-    patch_target = 'class.name'
-
-    @classmethod
-    def execute_test_steps(cls):
-        cls.patched_class = cls.patcher.start.return_value
-        cls.return_value = cls.test.patch_instance(
-            'class.name', patch_name='target_class', **cls.kwargs)
-
-
 class TheDefaultActImplementation(unittest.TestCase):
 
     def should_raise_NotImplementedError(self):
