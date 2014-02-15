@@ -1,8 +1,17 @@
 Change Log
 ==========
 
+Version 2.0.1 (15-Feb-2014)
+---------------------------
+- Correct a packaging version defect.
+
+  *Setup.py* cannot safely retrieve the version from the ``__version__``
+  attribute of the package since the import requires ``mock`` to be
+  present.  The immediate hot-fix is to duplicate the version number
+  until I can come up with a cleaner solution.
+
 Version 2.0.0 (15-Feb-2014)
--------------
+---------------------------
 - Remove ``fluenttest.TestCase.patches`` attribute.
 
   The ``patches`` attribute was just a little too magical for my tastes and

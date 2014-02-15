@@ -3,7 +3,6 @@ import os.path
 
 from setuptools import find_packages, setup
 
-from fluenttest import __version__
 from setupext import read_requirements_from_file
 
 
@@ -27,7 +26,7 @@ f.close()
 # let setuptools.setup do the real work
 setup(
     name='Fluent-Test',
-    version=__version__,
+    version='2.0.1',
     license='BSD',
     author='Dave Shawley',
     author_email='daveshawley@gmail.com',
