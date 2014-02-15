@@ -28,6 +28,9 @@ class FluentTestCase(unittest.TestCase):
     def should_implement_act(self):
         self.assert_is_class_method('act')
 
+    def should_implement_destroy(self):
+        self.assert_is_class_method('destroy')
+
     def should_be_a_new_class(self):
         class _NewStyleClass(object):
             pass
@@ -102,6 +105,19 @@ class SetupClassWithArrange(SetupClass):
 
     def should_call_arrange(self):
         self.test.arrange.assert_called_once_with()
+
+
+class SetupClassWithDestroy(SetupClass):
+
+    @classmethod
+    def make_patches(cls):
+        patch_dict = super(SetupClassWithDestroy, cls).make_patches()
+        patch_dict['destroy'] = mock.patch(
+            'fluenttest.test_case.TestCase.destroy')
+        return patch_dict
+
+    def should_call_destroy(self):
+        self.test.destroy.assert_called_once_with()
 
 
 class _PatchedBaseTest(PatchedFluentTestCase):
@@ -283,6 +299,16 @@ class RunTestWithException(PatchedFluentTestCase):
             cls.test.setup_class()
         except Exception as exc:
             cls.caught_exception = exc
+
+    @classmethod
+    def make_patches(cls):
+        patch_dict = super(RunTestWithException, cls).make_patches()
+        patch_dict['destroy'] = mock.patch(
+            'fluenttest.test_case.TestCase.destroy')
+        return patch_dict
+
+    def should_call_destroy(self):
+        self.test.destroy.assert_called_once_with()
 
 
 class WhenRunTestRaisesAnAllowedException(RunTestWithException):
