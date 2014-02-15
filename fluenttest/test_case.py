@@ -1,10 +1,6 @@
 import mock
 
 
-class _PrototypeObject:
-    pass
-
-
 class TestCase(object):
 
     """Arrange, Act, Assert test case.
@@ -25,13 +21,6 @@ class TestCase(object):
 
         The exception that was thrown during the action or ``None``.
 
-    .. py:attribute:: patches
-
-        The collection of patched objects is available as named attributes
-        of the ``patches`` attribute.  If you patched an instance named
-        ``foo`` for example.  The patch would be available as ``patches.foo``.
-        See :py:meth:`patch` for more information about this attribute.
-
     """
 
     allowed_exceptions = ()
@@ -49,7 +38,6 @@ class TestCase(object):
 
         """
         cls.exception = None
-        cls.patches = _PrototypeObject()
         cls._patches = []
 
         cls.arrange()
@@ -90,23 +78,16 @@ class TestCase(object):
     def patch(cls, target, patch_name=None, **kwargs):
         r"""Patch a named class or method.
 
-        This method calls :py:func:`mock.patch` with *target* and
-        *\*\*kwargs*.  The resulting patcher is stored in the
-        :py:attr:`patches` attributed collection.  The name of the attribute
-        is set by the *patch_name* parameter.  If it is left unspecified,
-        then the name is derived by replacing "dots" in *target* with
-        underscores - ``exceptions.Exception`` would be stored as
-        ``self.patches.exceptions_Exception``.
-
+        :param str target: the dotted-name to patch
         :returns: the result of starting the patch.
 
+        This method calls :py:func:`mock.patch` with *target* and
+        *\*\*kwargs*, saves the result, and returns the running patch.
+
         """
-        if patch_name is None:
-            patch_name = target.replace('.', '_')
         patcher = mock.patch(target, **kwargs)
         patched = patcher.start()
         cls._patches.append(patcher)
-        setattr(cls.patches, patch_name, patched)
         return patched
 
     @classmethod

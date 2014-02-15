@@ -81,9 +81,6 @@ class SetupClass(PatchedFluentTestCase):
     def should_call_act(self):
         self.patches['act'].assert_called_once_with()
 
-    def should_create_patches_attribute(self):
-        self.assertIsNotNone(getattr(self.test, 'patches'))
-
     def should_create_and_initialize_exception_attribute(self):
         self.assertIsNone(self.test.exception)
 
@@ -172,57 +169,6 @@ class WhenTearingDownWithFailedPatch(_PatchedBaseTest):
         self.assertFalse(self.bad_patch.stop.called)
 
 
-class _WhenPatchingBaseCase(_PatchedBaseTest):
-
-    patch_target = None
-    specified_patch_name = None
-    kwargs = {'arg': mock.sentinel.arg}
-
-    @classmethod
-    def execute_test_steps(cls):
-        cls.return_value = cls.test.patch(
-            cls.patch_target,
-            patch_name=cls.specified_patch_name,
-            **cls.kwargs
-        )
-
-    def should_patch_target(self):
-        self.mock_module.patch.assert_any_call(
-            self.patch_target, **self.kwargs)
-
-    def should_start_patch(self):
-        self.patcher.start.assert_called_once_with()
-
-    def should_return_patch(self):
-        self.assertIs(self.return_value,
-                      self.patcher.start.return_value)
-
-
-class WhenPatchingSimpleTarget(_WhenPatchingBaseCase):
-
-    patch_target = 'simple_target'
-
-    def should_register_patch_name_asis(self):
-        self.assertIs(self.test.patches.simple_target, self.return_value)
-
-
-class WhenPatchingDottedTarget(_WhenPatchingBaseCase):
-
-    patch_target = 'dotted.name'
-
-    def should_register_sanitized_patch_name(self):
-        self.assertIs(self.test.patches.dotted_name, self.return_value)
-
-
-class WhenPatchingWithNameSpecified(_WhenPatchingBaseCase):
-
-    patch_target = 'patch.target'
-    specified_patch_name = 'name_override'
-
-    def should_register_with_specified_name(self):
-        self.assertIs(self.test.patches.name_override, self.return_value)
-
-
 class WhenPatchingFails(_PatchedBaseTest):
 
     @classmethod
@@ -246,12 +192,6 @@ class WhenPatchingAnInstance(_PatchedBaseTest):
         cls.patched_class = cls.patcher.start.return_value
         cls.return_value = cls.test.patch_instance(
             'target.class', **cls.kwargs)
-
-    def should_register_patched_class(self):
-        self.assertIs(
-            self.test.patches.target_class,
-            self.patched_class,
-        )
 
     def should_return_patched_class_and_new_instance(self):
         self.assertEquals(
