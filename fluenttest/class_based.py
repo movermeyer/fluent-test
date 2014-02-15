@@ -1,3 +1,15 @@
+"""Add useful utilities for class-based testing.
+
+Classes
+-------
+- ``ClassTester`` - exposes assertions about a specific class
+
+Functions
+---------
+- ``the_class`` - creates a ``ClassTester`` instance for a named class.
+- ``lookup_class`` - finds a class by name.
+
+"""
 import inspect
 
 
@@ -8,10 +20,10 @@ class ClassTester:
     :param type cls: the class under test
 
     This class provides a readable and efficient method for asserting
-    that a class implements a particular interface.  Instead of specifying
-    the interface using abstract base classes and the like, this test
-    specifies the interface as a set of operations, parent classes, and
-    class attributes.
+    that a class implements a particular interface.  Instead of
+    specifying the interface using abstract base classes and the like,
+    this test specifies the interface as a set of operations, parent
+    classes, and class attributes.
 
     >>> probe = ClassTester(dict)
     >>> probe.implements_method('keys')
@@ -21,10 +33,10 @@ class ClassTester:
     >>> probe.has_attribute('__class__')
     True
 
-    Each assertion is implemented as a separate method that returns ``True``
-    or ``False``.  This is test runner agnostic so you can use the assertions
-    with `nose <http://nose.readthedocs.org/>`_, :py:mod:`unittest`,
-    or `py.test <http://pytest.org/>`_.
+    Each assertion is implemented as a separate method that returns
+    ``True`` or ``False``.  This is test runner agnostic so you can use
+    the assertions with `nose <http://nose.readthedocs.org/>`_,
+    :mod:`unittest`, or `py.test <http://pytest.org/>`_.
 
     """
 
@@ -42,7 +54,7 @@ class ClassTester:
         """Is the class a subclass of *parent_class*?
 
         :param parent_class: a dotted class name or anything acceptable
-            to :py:func:`.lookup_class`.
+            to :func:`.lookup_class`.
 
         """
         return issubclass(self.cls, lookup_class(parent_class))
@@ -70,11 +82,11 @@ class ClassTester:
 
 
 def the_class(cls, matcher_class=None):
-    """Return a :py:class:`ClassTester` instance for ``cls``.
+    """Return a :class:`~fluenttest.ClassTester` instance for ``cls``.
 
     :param cls: the ``class`` instance to inspect.
     :param type matcher_class: the type to instantiate, defaults
-        to :py:class:`ClassTester`
+        to :class:`~fluenttest.ClassTester`
 
     """
     matcher_class = matcher_class or ClassTester
@@ -86,7 +98,7 @@ def lookup_class(target):
 
     :param str target: the dot-separated name of the class to find,
         a ``class`` instance, or a ``type`` instance.
-    :returns: a :py:class:`class` or :py:class:`type` instance
+    :returns: a :class:`class` or :func:`type` instance
 
     """
     class NewStyle(object):
@@ -103,5 +115,5 @@ def lookup_class(target):
         return target
     if isinstance(target, (type(OldStyle), type(NewStyle))):
         return target
-    raise AssertionError("I can't look up a class name from " +
-                         str(target))
+    raise AssertionError(
+        "I can't look up a class name from {0}".format(target))

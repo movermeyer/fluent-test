@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-#
-# Fluent Test documentation build configuration file, created by
-# sphinx-quickstart on Sat Jul 13 16:27:26 2013.
-#
 from __future__ import unicode_literals
 
 import os
 import sys
+
+import fluenttest
 
 
 sys.path.insert(0, os.path.abspath('.'))
@@ -20,12 +18,12 @@ extensions = [
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Fluent Test'
-copyright = '2013, Dave Shawley'
+copyright = '2013, 2014, Dave Shawley'
 
 # The short X.Y version.
-version = '1'
+version = fluenttest.__version__
 # The full version, including alpha/beta/rc tags.
-release = '1'
+release = fluenttest.__version__
 
 exclude_patterns = []
 pygments_style = 'sphinx'

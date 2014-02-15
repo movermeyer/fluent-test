@@ -19,6 +19,7 @@ closer to what `RSpec`_ offers but one that feels like Python.
 
    unit-testing
    api
+   changelog
 
 .. include:: links.rst
 

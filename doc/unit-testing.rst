@@ -36,7 +36,7 @@ assertion::
         @classmethod
         def arrange(cls):
             super(TheFrobinator, cls).arrange()
-            cls.patch('frobination.internal.swizzle')
+            cls.swizzle = cls.patch('frobination.internal.swizzle')
             cls.argument = 'One'
             cls.frobinator = Frobinator()
 
@@ -48,8 +48,7 @@ assertion::
             assert self.return_value == True
 
         def test_should_swizzle_the_argument(self):
-            self.patches.frobination_internal_swizzle.assert_called_once_with(
-                self.argument)
+            self.swizzle.assert_called_once_with(self.argument)
 
 
 Patching
