@@ -1,4 +1,3 @@
-import collections
 import inspect
 import unittest
 
@@ -45,15 +44,12 @@ class PatchedFluentTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._patch_dict = cls.make_patches()
-        cls.patches = collections.namedtuple(
-            'PatchList', ' '.join(cls._patch_dict.keys()))
-        for patch_name in cls._patch_dict.keys():
-            setattr(
-                cls.patches,
-                patch_name,
-                cls._patch_dict[patch_name].start()
-            )
+        super(PatchedFluentTestCase, cls).setUpClass()
+        cls._active_patches = []
+        cls.patches = {}
+        for name, patch in cls.make_patches().items():
+            cls.patches[name] = patch.start()
+            cls._active_patches.append(patch)
 
     @classmethod
     def make_patches(cls):
@@ -68,8 +64,9 @@ class PatchedFluentTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        for patch in cls._patch_dict.values():
+        for patch in cls._active_patches:
             patch.stop()
+        super(PatchedFluentTestCase, cls).tearDownClass()
 
 
 class SetupClass(PatchedFluentTestCase):
@@ -82,7 +79,7 @@ class SetupClass(PatchedFluentTestCase):
         cls.test.setup_class()
 
     def should_call_act(self):
-        self.patches.act.assert_called_once_with()
+        self.patches['act'].assert_called_once_with()
 
     def should_create_patches_attribute(self):
         self.assertIsNotNone(getattr(self.test, 'patches'))
@@ -292,7 +289,7 @@ class RunTestWithException(PatchedFluentTestCase):
         super(RunTestWithException, cls).setUpClass()
 
         cls.raised_exception = LookupError()
-        cls.patches.act.side_effect = cls.raised_exception
+        cls.patches['act'].side_effect = cls.raised_exception
 
         cls.test = fluenttest.TestCase()
         try:
