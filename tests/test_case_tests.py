@@ -68,40 +68,29 @@ class SetupClass(PatchedFluentTestCase):
         cls.test = fluenttest.TestCase()
         cls.test.setup_class()
 
+    @classmethod
+    def make_patches(cls):
+        patch_dict = super(SetupClass, cls).make_patches()
+        patch_dict['arrange'] = mock.patch(
+            'fluenttest.test_case.TestCase.arrange')
+        patch_dict['destroy'] = mock.patch(
+            'fluenttest.test_case.TestCase.destroy')
+        return patch_dict
+
+    def should_call_arrange(self):
+        self.test.arrange.assert_called_once_with()
+
     def should_call_act(self):
-        self.patches['act'].assert_called_once_with()
+        self.test.act.assert_called_once_with()
+
+    def should_call_destroy(self):
+        self.test.destroy.assert_called_once_with()
 
     def should_create_and_initialize_exception_attribute(self):
         self.assertIsNone(self.test.exception)
 
     def should_create_and_initialize_allowed_exceptions_attribute(self):
         self.assertEquals(self.test.allowed_exceptions, ())
-
-
-class SetupClassWithArrange(SetupClass):
-
-    @classmethod
-    def make_patches(cls):
-        patch_dict = super(SetupClassWithArrange, cls).make_patches()
-        patch_dict['arrange'] = mock.patch(
-            'fluenttest.test_case.TestCase.arrange')
-        return patch_dict
-
-    def should_call_arrange(self):
-        self.test.arrange.assert_called_once_with()
-
-
-class SetupClassWithDestroy(SetupClass):
-
-    @classmethod
-    def make_patches(cls):
-        patch_dict = super(SetupClassWithDestroy, cls).make_patches()
-        patch_dict['destroy'] = mock.patch(
-            'fluenttest.test_case.TestCase.destroy')
-        return patch_dict
-
-    def should_call_destroy(self):
-        self.test.destroy.assert_called_once_with()
 
 
 class _PatchedBaseTest(PatchedFluentTestCase):
@@ -202,7 +191,7 @@ class WhenPatchingAnInstance(_PatchedBaseTest):
 
 class TheDefaultActImplementation(unittest.TestCase):
 
-    def should_raise_NotImplementedError(self):
+    def should_raise_not_implemented_error(self):
         with self.assertRaises(NotImplementedError):
             fluenttest.TestCase.act()
 
