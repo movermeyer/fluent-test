@@ -7,7 +7,29 @@ import fluenttest
 
 
 class PatchedFluentTestCase(unittest.TestCase):
+    """Test case that knows how to patch.
+
+    This class makes it easier to test our test case.  One of
+    the difficulties in testing this as a "unit" is that it
+    relies on class methods which cannot simply be overwritten
+    with mocks.  Instead, we have to patch out the class methods
+    explicitly.  This is what the :meth:`.make_patches` method
+    is all about.
+
+    1. Extend ``setUpClass`` to perform the action under test
+    2. Extend ``make_patches`` to create any patch objects that
+       you need for your test
+    3. Implement assertion methods.
+
+    defn: extend
+        To enhance a base implementation by calling the base
+        implementation in addition to implementing the new
+        functionality.
+
+    """
+
     allowed_exceptions = ()
+    """Patched into fluenttest.test_case.TestCase.allowed_exceptions."""
 
     @classmethod
     def setUpClass(cls):
@@ -20,6 +42,7 @@ class PatchedFluentTestCase(unittest.TestCase):
 
     @classmethod
     def make_patches(cls):
+        """Return a ``dict`` of named patch objects."""
         return {
             'allowed_exceptions': mock.patch.object(
                 fluenttest.test_case.TestCase,
@@ -82,7 +105,13 @@ class SetupClassWithDestroy(SetupClass):
 
 
 class _PatchedBaseTest(PatchedFluentTestCase):
+    """Test patching behaviors.
 
+    This test case patches out the ``mock`` module inside of
+    ``fluenttest.test_case`` so that we can ensure that the test
+    case code is doing the correct thing.  It's all very meta.
+
+    """
     @classmethod
     def setUpClass(cls):
         super(_PatchedBaseTest, cls).setUpClass()
