@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-import sys
+import sphinx_rtd_theme
 
 import fluenttest
 
-
-sys.path.insert(0, os.path.abspath('.'))
 
 needs_sphinx = '1.0'
 extensions = [
@@ -28,7 +25,8 @@ release = fluenttest.__version__
 exclude_patterns = []
 pygments_style = 'sphinx'
 
-html_theme = 'nature'
+html_theme = 'sphinx_rtd_theme'
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_show_sourcelink = True
 html_show_sphinx = True
 html_show_copyright = True

@@ -4,4 +4,5 @@
 # necessary for developing fluenttest.  These are in addition to things
 # already included in requirements.txt and test-requirements.txt
 #
-Sphinx
+sphinx>=1.2,<2
+sphinx-rtd-theme>=0.1,<1
