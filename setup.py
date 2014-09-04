@@ -4,6 +4,7 @@ import os.path
 from setuptools import find_packages, setup
 
 from setupext import read_requirements_from_file
+import fluenttest
 
 
 root_dir = os.path.dirname(__file__)
@@ -26,7 +27,7 @@ f.close()
 # let setuptools.setup do the real work
 setup(
     name='Fluent-Test',
-    version='2.0.1',
+    version=fluenttest.__version__,
     license='BSD',
     author='Dave Shawley',
     author_email='daveshawley@gmail.com',

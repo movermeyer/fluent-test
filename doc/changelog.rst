@@ -10,6 +10,13 @@ Version 3.0.0
   assert structural type information.  If you are using this, then feel
   free to copy and paste the code from the previous version.
 
+- Remove top-level exports from package __init__.py.
+
+  If you were referencing the test case as ``fluenttest.TestCase``, I
+  apologize.  Removing the top level ``import`` statements makes it
+  possible to reach into the version information without loading the
+  package and its dependencies.
+
 Version 2.0.1 (15-Feb-2014)
 ---------------------------
 - Correct a packaging version defect.

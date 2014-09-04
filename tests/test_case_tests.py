@@ -3,7 +3,7 @@ import unittest
 
 import mock
 
-import fluenttest
+import fluenttest.test_case
 
 
 class PatchedFluentTestCase(unittest.TestCase):
@@ -65,7 +65,7 @@ class SetupClass(PatchedFluentTestCase):
     def setUpClass(cls):
         super(SetupClass, cls).setUpClass()
 
-        cls.test = fluenttest.TestCase()
+        cls.test = fluenttest.test_case.TestCase()
         cls.test.setup_class()
 
     @classmethod
@@ -106,7 +106,7 @@ class _PatchedBaseTest(PatchedFluentTestCase):
         super(_PatchedBaseTest, cls).setUpClass()
         with mock.patch('fluenttest.test_case.mock') as cls.mock_module:
             cls.patcher = cls.mock_module.patch.return_value
-            cls.test = fluenttest.TestCase()
+            cls.test = fluenttest.test_case.TestCase()
             cls.test.setup_class()
             try:
                 cls.execute_test_steps()
@@ -193,7 +193,7 @@ class TheDefaultActImplementation(unittest.TestCase):
 
     def should_raise_not_implemented_error(self):
         with self.assertRaises(NotImplementedError):
-            fluenttest.TestCase.act()
+            fluenttest.test_case.TestCase.act()
 
 
 class RunTestWithException(PatchedFluentTestCase):
@@ -205,7 +205,7 @@ class RunTestWithException(PatchedFluentTestCase):
         cls.raised_exception = LookupError()
         cls.patches['act'].side_effect = cls.raised_exception
 
-        cls.test = fluenttest.TestCase()
+        cls.test = fluenttest.test_case.TestCase()
         try:
             cls.test.setup_class()
         except Exception as exc:
