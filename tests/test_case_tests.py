@@ -6,39 +6,6 @@ import mock
 import fluenttest
 
 
-class FluentTestCase(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.class_attrs = dict(
-            (a.name, a)
-            for a in inspect.classify_class_attrs(fluenttest.TestCase)
-        )
-
-    def should_implement_setup_class(self):
-        self.assert_is_class_method('setup_class')
-
-    def should_implement_teardown_class(self):
-        self.assert_is_class_method('teardown_class')
-
-    def should_implement_arrange(self):
-        self.assert_is_class_method('arrange')
-
-    def should_implement_act(self):
-        self.assert_is_class_method('act')
-
-    def should_implement_destroy(self):
-        self.assert_is_class_method('destroy')
-
-    def should_be_a_new_class(self):
-        class _NewStyleClass(object):
-            pass
-        self.assertIsInstance(fluenttest.TestCase, type(_NewStyleClass))
-
-    def assert_is_class_method(self, name):
-        self.assertEquals(self.class_attrs[name].kind, 'class method')
-
-
 class PatchedFluentTestCase(unittest.TestCase):
     allowed_exceptions = ()
 

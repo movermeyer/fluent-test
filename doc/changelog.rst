@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Version 3.0.0
+-------------
+- Remove class based testing module.
+
+  After using this library for a while, it has become apparent that the
+  class-based testing isn't useful.  It also is rather un-pythonic to
+  assert structural type information.  If you are using this, then feel
+  free to copy and paste the code from the previous version.
+
 Version 2.0.1 (15-Feb-2014)
 ---------------------------
 - Correct a packaging version defect.
