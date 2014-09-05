@@ -1,7 +1,8 @@
 Fluent Unit Testing
 ===================
 
-*Readable hybrid testing*
+*"When a failing test makes us read 20+ lines of test code,
+we die inside."* - C.J. Gaconnet
 
 Why?
 ~~~~
@@ -25,12 +26,10 @@ Where?
 Contributing
 ~~~~~~~~~~~~
 
-Fluent-test uses Vincent Driessen's excellent `gitflow`_ extenion to manage
-work flow through github.  Contributions are welcome as long as they follow
-a few basic rules:
+Contributions are welcome as long as they follow a few basic rules:
 
 1. They start out life by forking the central repo and creating a new
-   feature branch named *feature/my-feature* from the *develop* branch.
+   branch off of *master*.
 2. All tests pass and coverage is at 100% - **make test**
 3. All quality checks pass - **make lint**
 4. Issue a pull-request through github.
@@ -48,10 +47,11 @@ building a virtual environment to work with::
     $ cd fluent-test
     $ make environment
 
-This will create a Python 3 environment in the *env* directory using mkvenv
+This will create a Python 3 environment in the *env* directory using *mkvenv*
 and install the various prerequisites such as *pip* and *nose*.  You can
 activate the environment source ``source env/bin/activate``, launch a Python
-interpreter with ``env/bin/python``, and run the test suite with ``env/bin/nosetests``.
+interpreter with ``env/bin/python``, and run the test suite with
+``env/bin/nosetests``.
 
 The Makefile exports a few other useful targets:
 
