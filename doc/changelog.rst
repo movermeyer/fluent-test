@@ -17,6 +17,13 @@ Version 3.0.0
   possible to reach into the version information without loading the
   package and its dependencies.
 
+- Switch to Python ``unittest`` naming conventions.
+
+  Using ``setup_class`` and ``teardown_class`` causes problems if you
+  run tests with ``unittest.main``.  Not to mention that the Standard
+  Library uses ``setUpClass`` and ``tearDownClass`` regardless of how
+  un-pythonic the names are.
+
 Version 2.0.1 (15-Feb-2014)
 ---------------------------
 - Correct a packaging version defect.

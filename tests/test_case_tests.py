@@ -65,7 +65,7 @@ class SetupClass(PatchedFluentTestCase):
         super(SetupClass, cls).setUpClass()
 
         cls.test = fluenttest.test_case.TestCase()
-        cls.test.setup_class()
+        cls.test.setUpClass()
 
     @classmethod
     def make_patches(cls):
@@ -106,13 +106,13 @@ class _PatchedBaseTest(PatchedFluentTestCase):
         with mock.patch('fluenttest.test_case.mock') as cls.mock_module:
             cls.patcher = cls.mock_module.patch.return_value
             cls.test = fluenttest.test_case.TestCase()
-            cls.test.setup_class()
+            cls.test.setUpClass()
             try:
                 cls.execute_test_steps()
             except Exception as exc:
                 cls.captured_exception = exc
             finally:
-                cls.test.teardown_class()
+                cls.test.tearDownClass()
 
 
 class TeardownClass(_PatchedBaseTest):
@@ -206,7 +206,7 @@ class RunTestWithException(PatchedFluentTestCase):
 
         cls.test = fluenttest.test_case.TestCase()
         try:
-            cls.test.setup_class()
+            cls.test.setUpClass()
         except Exception as exc:
             cls.caught_exception = exc
 

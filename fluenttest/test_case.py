@@ -32,7 +32,7 @@ class TestCase(object):
     """Catch this set of exception classes."""
 
     @classmethod
-    def setup_class(cls):
+    def setUpClass(cls):
         """Arrange the environment and perform the action.
 
         This method ensures that :meth:`.arrange` and :meth:`.act` are
@@ -54,7 +54,7 @@ class TestCase(object):
             cls.destroy()
 
     @classmethod
-    def teardown_class(cls):
+    def tearDownClass(cls):
         """Stop any patches that have been created."""
         for patcher in cls._patches:
             patcher.stop()
