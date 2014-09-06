@@ -4,6 +4,8 @@ Fluent Unit Testing
 *"When a failing test makes us read 20+ lines of test code,
 we die inside."* - C.J. Gaconnet
 
+|Version| |Downloads| |Status| |License|
+
 Why?
 ~~~~
 
@@ -67,3 +69,7 @@ The Makefile exports a few other useful targets:
 .. _unittest: http://docs.python.org/2/library/unittest.html
 .. _RSpec: http://rspec.info/
 .. _gitflow: https://github.com/nvie/gitflow
+.. |Version| image:: https://badge.fury.io/py/fluent-test.svg
+.. |Downloads| image:: https://pypip.in/d/fluent-test/badge.svg
+.. |Status| image:: https://travis-ci.org/dave-shawley/fluent-test.svg
+.. |License| image:: https://pypip.in/license/fluent-test/badge.svg
