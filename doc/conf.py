@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-import sys
+import sphinx_rtd_theme
 
 import fluenttest
 
-
-sys.path.insert(0, os.path.abspath('.'))
 
 needs_sphinx = '1.0'
 extensions = [
@@ -21,14 +18,15 @@ project = 'Fluent Test'
 copyright = '2013, 2014, Dave Shawley'
 
 # The short X.Y version.
-version = fluenttest.__version__
+version = '.'.join(str(x) for x in fluenttest.version_info[:2])
 # The full version, including alpha/beta/rc tags.
 release = fluenttest.__version__
 
 exclude_patterns = []
 pygments_style = 'sphinx'
 
-html_theme = 'nature'
+html_theme = 'sphinx_rtd_theme'
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_show_sourcelink = True
 html_show_sphinx = True
 html_show_copyright = True

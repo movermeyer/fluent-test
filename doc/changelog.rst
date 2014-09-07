@@ -1,6 +1,29 @@
 Change Log
 ==========
 
+Version 3.0.0
+-------------
+- Remove class based testing module.
+
+  After using this library for a while, it has become apparent that the
+  class-based testing isn't useful.  It also is rather un-pythonic to
+  assert structural type information.  If you are using this, then feel
+  free to copy and paste the code from the previous version.
+
+- Remove top-level exports from package __init__.py.
+
+  If you were referencing the test case as ``fluenttest.TestCase``, I
+  apologize.  Removing the top level ``import`` statements makes it
+  possible to reach into the version information without loading the
+  package and its dependencies.
+
+- Switch to Python ``unittest`` naming conventions.
+
+  Using ``setup_class`` and ``teardown_class`` causes problems if you
+  run tests with ``unittest.main``.  Not to mention that the Standard
+  Library uses ``setUpClass`` and ``tearDownClass`` regardless of how
+  un-pythonic the names are.
+
 Version 2.0.1 (15-Feb-2014)
 ---------------------------
 - Correct a packaging version defect.

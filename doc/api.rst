@@ -1,29 +1,9 @@
 API Reference
 =============
 
-ClassTester
------------
-
-.. autoclass:: fluenttest.ClassTester
-    :members:
-    :undoc-members:
-
 TestCase
 --------
 
-.. autoclass:: fluenttest.TestCase
+.. autoclass:: fluenttest.test_case.TestCase
     :members:
     :undoc-members:
-
-Helpers Functions
------------------
-
-the_class
-~~~~~~~~~
-
-.. autofunction:: fluenttest.the_class
-
-lookup_class
-~~~~~~~~~~~~
-
-.. autofunction:: fluenttest.lookup_class

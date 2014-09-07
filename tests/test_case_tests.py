@@ -1,46 +1,34 @@
-import inspect
 import unittest
 
 import mock
 
-import fluenttest
-
-
-class FluentTestCase(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.class_attrs = dict(
-            (a.name, a)
-            for a in inspect.classify_class_attrs(fluenttest.TestCase)
-        )
-
-    def should_implement_setup_class(self):
-        self.assert_is_class_method('setup_class')
-
-    def should_implement_teardown_class(self):
-        self.assert_is_class_method('teardown_class')
-
-    def should_implement_arrange(self):
-        self.assert_is_class_method('arrange')
-
-    def should_implement_act(self):
-        self.assert_is_class_method('act')
-
-    def should_implement_destroy(self):
-        self.assert_is_class_method('destroy')
-
-    def should_be_a_new_class(self):
-        class _NewStyleClass(object):
-            pass
-        self.assertIsInstance(fluenttest.TestCase, type(_NewStyleClass))
-
-    def assert_is_class_method(self, name):
-        self.assertEquals(self.class_attrs[name].kind, 'class method')
+import fluenttest.test_case
 
 
 class PatchedFluentTestCase(unittest.TestCase):
+    """Test case that knows how to patch.
+
+    This class makes it easier to test our test case.  One of
+    the difficulties in testing this as a "unit" is that it
+    relies on class methods which cannot simply be overwritten
+    with mocks.  Instead, we have to patch out the class methods
+    explicitly.  This is what the :meth:`.make_patches` method
+    is all about.
+
+    1. Extend ``setUpClass`` to perform the action under test
+    2. Extend ``make_patches`` to create any patch objects that
+       you need for your test
+    3. Implement assertion methods.
+
+    defn: extend
+        To enhance a base implementation by calling the base
+        implementation in addition to implementing the new
+        functionality.
+
+    """
+
     allowed_exceptions = ()
+    """Patched into fluenttest.test_case.TestCase.allowed_exceptions."""
 
     @classmethod
     def setUpClass(cls):
@@ -53,6 +41,7 @@ class PatchedFluentTestCase(unittest.TestCase):
 
     @classmethod
     def make_patches(cls):
+        """Return a ``dict`` of named patch objects."""
         return {
             'allowed_exceptions': mock.patch.object(
                 fluenttest.test_case.TestCase,
@@ -75,11 +64,26 @@ class SetupClass(PatchedFluentTestCase):
     def setUpClass(cls):
         super(SetupClass, cls).setUpClass()
 
-        cls.test = fluenttest.TestCase()
-        cls.test.setup_class()
+        cls.test = fluenttest.test_case.TestCase()
+        cls.test.setUpClass()
+
+    @classmethod
+    def make_patches(cls):
+        patch_dict = super(SetupClass, cls).make_patches()
+        patch_dict['arrange'] = mock.patch(
+            'fluenttest.test_case.TestCase.arrange')
+        patch_dict['destroy'] = mock.patch(
+            'fluenttest.test_case.TestCase.destroy')
+        return patch_dict
+
+    def should_call_arrange(self):
+        self.test.arrange.assert_called_once_with()
 
     def should_call_act(self):
-        self.patches['act'].assert_called_once_with()
+        self.test.act.assert_called_once_with()
+
+    def should_call_destroy(self):
+        self.test.destroy.assert_called_once_with()
 
     def should_create_and_initialize_exception_attribute(self):
         self.assertIsNone(self.test.exception)
@@ -88,47 +92,27 @@ class SetupClass(PatchedFluentTestCase):
         self.assertEquals(self.test.allowed_exceptions, ())
 
 
-class SetupClassWithArrange(SetupClass):
-
-    @classmethod
-    def make_patches(cls):
-        patch_dict = super(SetupClassWithArrange, cls).make_patches()
-        patch_dict['arrange'] = mock.patch(
-            'fluenttest.test_case.TestCase.arrange')
-        return patch_dict
-
-    def should_call_arrange(self):
-        self.test.arrange.assert_called_once_with()
-
-
-class SetupClassWithDestroy(SetupClass):
-
-    @classmethod
-    def make_patches(cls):
-        patch_dict = super(SetupClassWithDestroy, cls).make_patches()
-        patch_dict['destroy'] = mock.patch(
-            'fluenttest.test_case.TestCase.destroy')
-        return patch_dict
-
-    def should_call_destroy(self):
-        self.test.destroy.assert_called_once_with()
-
-
 class _PatchedBaseTest(PatchedFluentTestCase):
+    """Test patching behaviors.
 
+    This test case patches out the ``mock`` module inside of
+    ``fluenttest.test_case`` so that we can ensure that the test
+    case code is doing the correct thing.  It's all very meta.
+
+    """
     @classmethod
     def setUpClass(cls):
         super(_PatchedBaseTest, cls).setUpClass()
         with mock.patch('fluenttest.test_case.mock') as cls.mock_module:
             cls.patcher = cls.mock_module.patch.return_value
-            cls.test = fluenttest.TestCase()
-            cls.test.setup_class()
+            cls.test = fluenttest.test_case.TestCase()
+            cls.test.setUpClass()
             try:
                 cls.execute_test_steps()
             except Exception as exc:
                 cls.captured_exception = exc
             finally:
-                cls.test.teardown_class()
+                cls.test.tearDownClass()
 
 
 class TeardownClass(_PatchedBaseTest):
@@ -206,9 +190,9 @@ class WhenPatchingAnInstance(_PatchedBaseTest):
 
 class TheDefaultActImplementation(unittest.TestCase):
 
-    def should_raise_NotImplementedError(self):
+    def should_raise_not_implemented_error(self):
         with self.assertRaises(NotImplementedError):
-            fluenttest.TestCase.act()
+            fluenttest.test_case.TestCase.act()
 
 
 class RunTestWithException(PatchedFluentTestCase):
@@ -220,9 +204,9 @@ class RunTestWithException(PatchedFluentTestCase):
         cls.raised_exception = LookupError()
         cls.patches['act'].side_effect = cls.raised_exception
 
-        cls.test = fluenttest.TestCase()
+        cls.test = fluenttest.test_case.TestCase()
         try:
-            cls.test.setup_class()
+            cls.test.setUpClass()
         except Exception as exc:
             cls.caught_exception = exc
 
