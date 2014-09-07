@@ -25,6 +25,78 @@ Where?
 - CI: https://travis-ci.org/dave-shawley/fluent-test
 - Documentation: https://fluent-test.readthedocs.org/
 
+How?
+~~~~
+
+`fluenttest.test_case.TestCase` implements the Arrange, Act, Assert method
+of testing.  The configuration for the test case and the execution of the
+single action under test is run precisely once per test case instance.
+The test case contains multiple assertions each in its own method.  The
+implementation leverages existing test case runners such as `nose`_ and
+`py.test`_.  In order to run the arrange and act steps once per test,
+fluenttest calls ``arrange`` and ``act`` from within the ``setUpClass``
+class method.  Each assertion is then written in its own test method.
+The following snippet rewrites the simple example from the Python Standard
+library unittest documentation::
+
+   import random
+   import unittest
+
+   class TestSequenceFunctions(unittest.TestCase):
+      def setUp(self):
+         self.seq = list(range(10))
+
+      def test_shuffle(self):
+         # make sure the shuffled sequence does not lose any elements
+         random.shuffle(self.seq)
+         self.seq.sort()
+         self.assertEqual(self.seq, list(range(10)))
+
+         # should raise an exception for an immutable sequence
+         self.assertRaises(TypeError, random.shuffle, (1, 2, 3))
+
+This very simple test looks like the following when written using
+``fluenttest``.  Notice that the comments in the original test really
+pointed out that there were multiple assertions buried in the test
+method.  This is much more explicit with ``fluenttest``::
+
+   import random
+   import unittest
+
+   from fluenttest import test_case
+
+   class WhenShufflingSequence(test_case.TestCase, unittest.TestCase):
+       @classmethod
+       def arrange(cls):
+           super(WhenShufflingSequence, cls).arrange()
+           cls.input_sequence = list(range(10))
+           cls.result_sequence = cls.input_sequence[:]
+
+       @classmethod
+       def act(cls):
+           random.shuffle(cls.result_sequence)
+
+       def test_should_not_loose_elements(self):
+           self.assertEqual(sorted(self.result_sequence),
+                            sorted(self.input_sequence))
+
+   class WhenShufflingImmutableSequence(test_case.TestCase, unittest.TestCase):
+       allowed_exceptions = TypeError
+
+       @classmethod
+       def act(cls):
+           random.shuffle((1, 2, 3))
+
+       def test_should_raise_type_error(self):
+           self.assertIsInstance(self.exception, TypeError)
+
+The ``fluenttest`` version is almost twice the length of the original so
+brevity is not a quality to expect from this style of testing.  The first
+thing that you gain is that the comments that explained what each test is
+doing is replace with very explicit code.  In this simplistic example, the
+gain isn't very notable.  Look at the *tests* directory for a realistic
+example of tests written in this style.
+
 Contributing
 ~~~~~~~~~~~~
 
@@ -69,6 +141,9 @@ The Makefile exports a few other useful targets:
 .. _unittest: http://docs.python.org/2/library/unittest.html
 .. _RSpec: http://rspec.info/
 .. _gitflow: https://github.com/nvie/gitflow
+.. _nose: http://nose.readthedocs.org
+.. _py.test: http://pytest.org
+
 .. |Version| image:: https://badge.fury.io/py/fluent-test.svg
 .. |Downloads| image:: https://pypip.in/d/fluent-test/badge.svg
 .. |Status| image:: https://travis-ci.org/dave-shawley/fluent-test.svg
