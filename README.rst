@@ -145,6 +145,6 @@ The Makefile exports a few other useful targets:
 .. _py.test: http://pytest.org
 
 .. |Version| image:: https://badge.fury.io/py/fluent-test.svg
-.. |Downloads| image:: https://pypip.in/d/fluent-test/badge.svg
+.. |Downloads| image:: https://img.shields.io/pypi/dm/fluent-test.svg
 .. |Status| image:: https://travis-ci.org/dave-shawley/fluent-test.svg
-.. |License| image:: https://pypip.in/license/fluent-test/badge.svg
+.. |License| image:: https://img.shields.io/pypi/l/fluent-test.svg
